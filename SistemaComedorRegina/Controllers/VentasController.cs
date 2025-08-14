@@ -25,7 +25,23 @@ namespace SistemaComedorRegina.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Ventas>>> GetVentas()
         {
-            return await _context.Ventas.ToListAsync();
+            return await _context.Ventas
+                .OrderByDescending(v => v.Fecha)
+                .ToListAsync();
+        }
+        [HttpGet("filter")]
+        public async Task<ActionResult<IEnumerable<Ventas>>> GetGastosByFilter(DateTime? from, DateTime? to, string? description)
+        {
+            IQueryable<Ventas> gastosToFilter = _context.Ventas;
+
+            if (from.HasValue && to.HasValue)
+            {
+                gastosToFilter = gastosToFilter.Where(g => g.Fecha >= from && g.Fecha <= to);
+            }
+
+            return await gastosToFilter
+                .OrderByDescending(g => g.Fecha)
+                .ToListAsync();
         }
 
         // GET: api/Ventas/5

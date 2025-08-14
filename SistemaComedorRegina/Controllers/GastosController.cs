@@ -21,7 +21,29 @@ namespace SistemaComedorRegina.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GastosDto>>> GetGastos()
         {
-            return await _context.Gastos.Select(g => g.ToDto()).ToListAsync();
+            return await _context.Gastos
+                .OrderByDescending(g => g.Fecha)
+                .Select(g => g.ToDto())
+                .ToListAsync();
+        }
+
+        [HttpGet("filter")]
+        public async Task<ActionResult<IEnumerable<Gastos>>> GetGastosByFilter(DateTime? from, DateTime? to, string? description)
+        {
+            IQueryable<Gastos> gastosToFilter = _context.Gastos;
+
+            if(from.HasValue && to.HasValue)
+            {
+                gastosToFilter = gastosToFilter.Where(g => g.Fecha >= from && g.Fecha <= to);
+            }
+            if(!string.IsNullOrEmpty(description))
+            {
+                gastosToFilter = gastosToFilter.Where(g => g.Descripcion.Contains(description));
+            }
+                
+            return await gastosToFilter
+                .OrderByDescending(g => g.Fecha)
+                .ToListAsync();
         }
 
         // GET: api/Gastos/5
@@ -99,5 +121,7 @@ namespace SistemaComedorRegina.Controllers
         {
             return await _context.Gastos.AnyAsync(e => e.GastoId == id);
         }
+
+        
     }
 }

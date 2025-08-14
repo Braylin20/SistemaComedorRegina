@@ -24,6 +24,7 @@ public class Gastos
     {
         return new GastosDto
         {
+            GastoId = this.GastoId,
             Descripcion = this.Descripcion,
             Monto = this.Monto,
             Fecha = this.Fecha,
