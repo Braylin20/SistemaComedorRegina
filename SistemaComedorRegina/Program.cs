@@ -28,13 +28,13 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-
+app.UseCors("AllowAll");
 
 app.MapOpenApi();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseCors("AllowAll");
+
 
 app.UseHttpsRedirection();
 
