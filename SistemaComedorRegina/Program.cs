@@ -14,27 +14,22 @@ builder.Services.AddSwaggerGen();
 var ConStr = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlServer(ConStr));
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-    });
-});
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-
+app.UseCors(policy =>
+{
+    policy
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+});
 
 app.MapOpenApi();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseCors("AllowAll");
+
 
 app.UseHttpsRedirection();
 
